@@ -9,10 +9,12 @@
 #include <vector>
 
 // Simple Spinlock
-struct Spinlock {
+class Spinlock {
+ private:
   // Lock is just an atomic bool
   std::atomic<bool> locked{false};
 
+ public:
   // Locking mechanism
   void lock() {
     // Exchange will return the previous value of the lock
