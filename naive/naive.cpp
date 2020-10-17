@@ -19,13 +19,14 @@ class Spinlock {
   void lock() {
     // Exchange will return the previous value of the lock
     // If the lock is free (false), it is set to true and the loop exits
-    // If the lock is taken (true), spin in the loop until the loop exits
+    // If the lock is taken (true), spin in the loop until someone else frees
+    // the lock and we grab it
     while (locked.exchange(true))
       ;
   }
 
   // Unlocking mechanism
-  // Just set the lock to free (0)
+  // Just set the lock to free (false)
   // Can also use the assignment operator
   void unlock() { locked.store(false); }
 };
