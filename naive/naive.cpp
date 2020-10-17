@@ -64,7 +64,8 @@ static void naive(benchmark::State &s) {
   }
 }
 BENCHMARK(naive)
-    ->DenseRange(1, std::thread::hardware_concurrency())
+    ->RangeMultiplier(2)
+    ->Range(1, std::thread::hardware_concurrency())
     ->UseRealTime()
     ->Unit(benchmark::kMillisecond);
 
