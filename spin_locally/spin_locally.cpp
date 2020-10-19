@@ -17,21 +17,22 @@ struct Spinlock {
 
   // Locking mechanism
   void lock() {
-    // Keep trying
+    // Keep trying forever
     while (1) {
       // Try and grab the lock
       // Return if we get the lock
       if (!locked.exchange(true)) return;
 
       // If we didn't get the lock, just read the value which gets cached
-      // locally This leads to less traffic
+      // locally.
+      // This leads to less traffic
       while (locked.load())
         ;
     }
   }
 
   // Unlocking mechanism
-  // Just set the lock to free (0)
+  // Just set the lock to free (false)
   // Can also use the assignment operator
   void unlock() { locked.store(false); }
 };
@@ -70,7 +71,8 @@ static void spin_locally(benchmark::State &s) {
   }
 }
 BENCHMARK(spin_locally)
-    ->DenseRange(1, std::thread::hardware_concurrency())
+    ->RangeMultiplier(2)
+    ->Range(1, std::thread::hardware_concurrency())
     ->UseRealTime()
     ->Unit(benchmark::kMillisecond);
 
