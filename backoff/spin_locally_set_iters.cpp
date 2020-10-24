@@ -70,6 +70,6 @@ static void spin_locally(benchmark::State &s) {
     threads.clear();
   }
 }
-BENCHMARK(spin_locally)->Arg(4)->Unit(benchmark::kMillisecond)->Iterations(100);
+BENCHMARK(spin_locally)->Arg(8)->Unit(benchmark::kMillisecond)->Iterations(50);
 
 BENCHMARK_MAIN();

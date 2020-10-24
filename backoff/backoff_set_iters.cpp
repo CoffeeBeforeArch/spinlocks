@@ -29,7 +29,14 @@ struct Spinlock {
       // If we didn't get the lock, just read the value which gets cached
       // locally. This leads to less traffic.
       // Each iteration we can also call pause to limit the number of writes.
-      while (locked.load()) __builtin_ia32_pause();
+      // How many times you should pause each time should be experimentally
+      // determined
+      while (locked.load()) {
+        // Pause for some number of iterations
+        for (int i = 0; i < 4; i++) {
+          __builtin_ia32_pause();
+        }
+      }
     }
   }
 
@@ -72,6 +79,6 @@ static void backoff(benchmark::State &s) {
     threads.clear();
   }
 }
-BENCHMARK(backoff)->Arg(4)->Unit(benchmark::kMillisecond)->Iterations(100);
+BENCHMARK(backoff)->Arg(8)->Unit(benchmark::kMillisecond)->Iterations(50);
 
 BENCHMARK_MAIN();
