@@ -5,6 +5,7 @@
 // By: Nick from CoffeeBeforeArch
 
 #include <benchmark/benchmark.h>
+#include <emmintrin.h>
 
 #include <atomic>
 #include <cstdint>
@@ -34,7 +35,7 @@ struct Spinlock {
       while (locked.load()) {
         // Pause for some number of iterations
         for (int i = 0; i < 4; i++) {
-          __builtin_ia32_pause();
+          _mm_pause();
         }
       }
     }
