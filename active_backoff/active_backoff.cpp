@@ -1,6 +1,7 @@
 // This program benchmarks an improved spinlock C++
 // Optimizations:
 //  1.) Spin locally
+//  2.) Backoff
 // By: Nick from CoffeeBeforeArch
 
 #include <benchmark/benchmark.h>
@@ -8,26 +9,33 @@
 #include <atomic>
 #include <cstdint>
 #include <thread>
+#include <vector>
 
 // Simple Spinlock
 // Lock now performs local spinning
+// Lock now does backoff
 struct Spinlock {
   // Lock is just an atomic bool
   std::atomic<bool> locked{false};
 
   // Locking mechanism
   void lock() {
-    // Keep trying forever
+    // Keep trying
     while (1) {
       // Try and grab the lock
-      // Return if we get the lock
+      // Exit if we got the lock
       if (!locked.exchange(true)) return;
 
       // If we didn't get the lock, just read the value which gets cached
-      // locally.
-      // This leads to less traffic
-      while (locked.load())
-        ;
+      // locally. This leads to less traffic.
+      // Each iteration we can also call pause to limit the number of writes.
+      // How many times you should pause each time should be experimentally
+      // determined
+      while (locked.load()) {
+        // Pause for some number of iterations
+        for (volatile int i = 0; i < 100; i += 1)
+          ;
+      }
     }
   }
 
@@ -47,7 +55,7 @@ void inc(Spinlock &s, std::int64_t &val) {
 }
 
 // Small Benchmark
-static void spin_locally(benchmark::State &s) {
+static void backoff(benchmark::State &s) {
   // Sweep over a range of threads
   auto num_threads = s.range(0);
 
@@ -70,6 +78,10 @@ static void spin_locally(benchmark::State &s) {
     threads.clear();
   }
 }
-BENCHMARK(spin_locally)->Arg(8)->Unit(benchmark::kMillisecond)->Iterations(50);
+BENCHMARK(backoff)
+    ->RangeMultiplier(2)
+    ->Range(1, std::thread::hardware_concurrency())
+    ->UseRealTime()
+    ->Unit(benchmark::kMillisecond);
 
 BENCHMARK_MAIN();
