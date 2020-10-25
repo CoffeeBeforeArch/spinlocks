@@ -6,6 +6,7 @@
 // By: Nick from CoffeeBeforeArch
 
 #include <benchmark/benchmark.h>
+#include <emmintrin.h>
 
 #include <atomic>
 #include <cstdint>
@@ -38,7 +39,7 @@ struct Spinlock {
       // locally. This leads to less traffic.
       // Designed to improve the performance of spin-wait loops.
       while (locked.load()) {
-        for (int i = 0; i < backoff; i++) __builtin_ia32_pause();
+        for (int i = 0; i < backoff; i++) _mm_pause();
         backoff = std::min(backoff << 1, MAX_BACKOFF);
       }
     }
