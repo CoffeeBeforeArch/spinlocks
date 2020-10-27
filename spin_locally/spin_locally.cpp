@@ -8,6 +8,7 @@
 #include <atomic>
 #include <cstdint>
 #include <thread>
+#include <vector>
 
 // Simple Spinlock
 // Lock now performs local spinning
