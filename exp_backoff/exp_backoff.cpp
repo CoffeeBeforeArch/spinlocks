@@ -13,16 +13,15 @@
 #include <thread>
 #include <vector>
 
+#define MIN_BACKOFF 4
+#define MAX_BACKOFF 1024
+
 // Simple Spinlock
 // Lock now performs local spinning
 // Lock now performs exponential backoff
 struct Spinlock {
   // Lock is just an atomic bool
   std::atomic<bool> locked{false};
-
-  // Constants for number of backoff iterations
-  const int MAX_BACKOFF = 1 << 10;
-  const int MIN_BACKOFF = 4;
 
   // Locking mechanism
   void lock() {
