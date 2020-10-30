@@ -19,10 +19,12 @@
 // Simple Spinlock
 // Lock now performs local spinning
 // Lock now performs exponential backoff
-struct Spinlock {
+class Spinlock {
+ private:
   // Lock is just an atomic bool
   std::atomic<bool> locked{false};
 
+ public:
   // Locking mechanism
   void lock() {
     // Start backoff at MIN_BACKOFF iterations
@@ -37,17 +39,17 @@ struct Spinlock {
       // If we didn't get the lock, just read the value which gets cached
       // locally. This leads to less traffic.
       // Designed to improve the performance of spin-wait loops.
-      while (locked.load()) {
+      do {
         for (int i = 0; i < backoff; i++) _mm_pause();
         backoff = std::min(backoff << 1, MAX_BACKOFF);
-      }
+      } while (locked.load());
     }
   }
 
   // Unlocking mechanism
   // Just set the lock to free (false)
   // Can also use the assignment operator
-  void unlock() { locked.store(false, std::memory_order_release); }
+  void unlock() { locked.store(false); }
 };
 
 // Increment val once each time the lock is acquired

@@ -15,10 +15,12 @@
 // Simple Spinlock
 // Lock now performs local spinning
 // Lock now does backoff
-struct Spinlock {
+class Spinlock {
+ private:
   // Lock is just an atomic bool
   std::atomic<bool> locked{false};
 
+ public:
   // Locking mechanism
   void lock() {
     // Keep trying
@@ -32,12 +34,12 @@ struct Spinlock {
       // Each iteration we can also call pause to limit the number of writes.
       // How many times you should pause each time should be experimentally
       // determined
-      while (locked.load()) {
+      do {
         // Pause for some number of iterations
         for (int i = 0; i < 4; i++) {
           _mm_pause();
         }
-      }
+      } while (locked.load());
     }
   }
 
