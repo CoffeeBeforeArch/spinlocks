@@ -35,7 +35,7 @@ class Spinlock {
       // determined
       do {
         // Pause for some number of iterations
-        for (volatile int i = 0; i < 100; i += 1)
+        for (volatile int i = 0; i < 150; i += 1)
           ;
       } while (locked.load());
     }
