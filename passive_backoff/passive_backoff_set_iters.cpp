@@ -59,7 +59,7 @@ void inc(Spinlock &s, std::int64_t &val) {
 }
 
 // Small Benchmark
-static void backoff(benchmark::State &s) {
+static void passive_backoff(benchmark::State &s) {
   // Sweep over a range of threads
   auto num_threads = s.range(0);
 
@@ -82,6 +82,9 @@ static void backoff(benchmark::State &s) {
     threads.clear();
   }
 }
-BENCHMARK(backoff)->Arg(8)->Unit(benchmark::kMillisecond)->Iterations(50);
+BENCHMARK(passive_backoff)
+    ->Arg(8)
+    ->Unit(benchmark::kMillisecond)
+    ->Iterations(50);
 
 BENCHMARK_MAIN();
