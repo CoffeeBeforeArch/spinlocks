@@ -71,7 +71,7 @@ void inc(Spinlock &s, std::int64_t &val) {
 }
 
 // Small Benchmark
-static void passive_backoff(benchmark::State &s) {
+static void random_backoff(benchmark::State &s) {
   // Sweep over a range of threads
   auto num_threads = s.range(0);
 
@@ -94,7 +94,7 @@ static void passive_backoff(benchmark::State &s) {
     threads.clear();
   }
 }
-BENCHMARK(passive_backoff)
+BENCHMARK(random_backoff)
     ->RangeMultiplier(2)
     ->Range(1, std::thread::hardware_concurrency())
     ->UseRealTime()
