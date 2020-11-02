@@ -38,10 +38,15 @@ class Spinlock {
 
       // If we didn't get the lock, just read the value which gets cached
       // locally. This leads to less traffic.
-      // Designed to improve the performance of spin-wait loops.
+      // Pause for an exponentially increasing number of iterations
       do {
+        // Pause for some number of iterations
         for (int i = 0; i < backoff; i++) _mm_pause();
+
+        // Get the backoff iterations for next time
         backoff = std::min(backoff << 1, MAX_BACKOFF);
+
+        // Check to see if the lock is free
       } while (locked.load());
     }
   }
