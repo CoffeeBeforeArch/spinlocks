@@ -36,9 +36,9 @@ class Spinlock {
       // determined
       do {
         // Pause for some number of iterations
-        for (int i = 0; i < 4; i++) {
-          _mm_pause();
-        }
+        for (int i = 0; i < 4; i++) _mm_pause();
+
+        // Check to see if the lock is free
       } while (locked.load());
     }
   }

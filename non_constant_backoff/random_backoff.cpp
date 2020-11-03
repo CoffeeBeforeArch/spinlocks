@@ -2,6 +2,7 @@
 // Optimizations:
 //  1.) Spin locally
 //  2.) Backoff
+//  3.) Random Backoff
 // By: Nick from CoffeeBeforeArch
 
 #include <benchmark/benchmark.h>
