@@ -40,15 +40,15 @@ class Spinlock {
       // Exit if we got the lock
       if (!locked.exchange(true)) return;
 
-      // Get a random number of iterations between 4 and 1024
-      int backoff = dist(rng);
-
       // If we didn't get the lock, just read the value which gets cached
       // locally. This leads to less traffic.
       // Pause for a random number of iterations (between 4 and 1024)
       do {
+        // Get a random number of iterations between 4 and 1024
+        int backoff_iters = dist(rng);
+
         // Pause for some number of iterations
-        for (int i = 0; i < backoff; i++) _mm_pause();
+        for (int i = 0; i < backoff_iters; i++) _mm_pause();
 
         // Check to see if the lock is now free
       } while (locked.load());

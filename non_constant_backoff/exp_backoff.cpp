@@ -28,7 +28,7 @@ class Spinlock {
   // Locking mechanism
   void lock() {
     // Start backoff at MIN_BACKOFF iterations
-    int backoff = MIN_BACKOFF;
+    int backoff_iters = MIN_BACKOFF;
 
     // Keep trying
     while (1) {
@@ -41,10 +41,10 @@ class Spinlock {
       // Pause for an exponentially increasing number of iterations
       do {
         // Pause for some number of iterations
-        for (int i = 0; i < backoff; i++) _mm_pause();
+        for (int i = 0; i < backoff_iters; i++) _mm_pause();
 
         // Get the backoff iterations for next time
-        backoff = std::min(backoff << 1, MAX_BACKOFF);
+        backoff_iters = std::min(backoff_iters << 1, MAX_BACKOFF);
 
         // Check to see if the lock is free
       } while (locked.load());
