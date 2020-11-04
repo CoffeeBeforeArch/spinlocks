@@ -22,7 +22,8 @@ class Spinlock {
   //  1.) The latest place taken in line
   //  2.) Which number is currently being served
   std::atomic<std::uint64_t> line{0};
-  std::uint64_t serving{0};
+  // Needs to avoid the compiler putting this in a register!
+  volatile std::uint64_t serving{0};
 
  public:
   // Locking mechanism
@@ -39,7 +40,7 @@ class Spinlock {
   // Increment serving number to pass the lock
   // No need for an atomic! The thread with the lock is the only one that
   // accesses this variable!
-  void unlock() { serving++; }
+  void unlock() { serving = serving + 1; }
 };
 
 // Increment val once each time the lock is acquired
