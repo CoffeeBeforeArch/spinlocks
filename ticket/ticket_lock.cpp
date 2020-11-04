@@ -2,7 +2,7 @@
 // Optimizations:
 //  1.) Spin locally
 //  2.) Backoff
-//  3.) Ticket-based
+//  3.) Ticket-based (for fairness)
 // By: Nick from CoffeeBeforeArch
 
 #include <benchmark/benchmark.h>
@@ -27,16 +27,18 @@ class Spinlock {
  public:
   // Locking mechanism
   void lock() {
-    // Get the latest place in line
+    // Get the latest place in line (and increment the value)
     auto place = line.fetch_add(1);
 
-    // Wait until our place in line comes up
+    // Wait until our number is "called"
     while (serving != place)
       ;
   }
 
   // Unlocking mechanism
   // Increment serving number to pass the lock
+  // No need for an atomic! The thread with the lock is the only one that
+  // accesses this variable!
   void unlock() { serving++; }
 };
 
