@@ -1,12 +1,9 @@
 // This program benchmarks an improved spinlock C++
 // Optimizations:
-//  1.) Spin locally
-//  2.) Backoff
-//  3.) Ticket-based (for fairness)
+//  1.) Ticket-based (for fairness)
 // By: Nick from CoffeeBeforeArch
 
 #include <benchmark/benchmark.h>
-#include <emmintrin.h>
 
 #include <atomic>
 #include <cstdint>
@@ -14,8 +11,7 @@
 #include <vector>
 
 // Simple Spinlock
-// Lock now performs local spinning
-// Lock now does backoff
+// Now uses ticket system for fairness
 class Spinlock {
  private:
   // Lock is now two counters:
