@@ -17,9 +17,9 @@ class Spinlock {
   // Lock is now two counters:
   //  1.) The latest place taken in line
   //  2.) Which number is currently being served
-  std::atomic<std::uint64_t> line{0};
+  std::atomic<std::uint16_t> line{0};
   // Needs to avoid the compiler putting this in a register!
-  volatile std::uint64_t serving{0};
+  std::uint16_t serving{0};
 
  public:
   // Locking mechanism
