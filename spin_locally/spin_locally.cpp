@@ -12,10 +12,12 @@
 
 // Simple Spinlock
 // Lock now performs local spinning
-struct Spinlock {
+class Spinlock {
+ private:
   // Lock is just an atomic bool
   std::atomic<bool> locked{false};
 
+ public:
   // Locking mechanism
   void lock() {
     // Keep trying forever
