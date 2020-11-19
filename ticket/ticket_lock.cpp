@@ -19,7 +19,7 @@ class Spinlock {
   //  2.) Which number is currently being served
   std::atomic<std::uint16_t> line{0};
   // Needs to avoid the compiler putting this in a register!
-  std::uint16_t serving{0};
+  volatile std::uint16_t serving{0};
 
  public:
   // Locking mechanism
