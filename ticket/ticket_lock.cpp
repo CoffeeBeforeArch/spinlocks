@@ -36,7 +36,10 @@ class Spinlock {
   // Increment serving number to pass the lock
   // No need for an atomic! The thread with the lock is the only one that
   // accesses this variable!
-  void unlock() { serving = serving + 1; }
+  void unlock() {
+    asm volatile("" : : : "memory");
+    serving = serving + 1;
+  }
 };
 
 // Increment val once each time the lock is acquired
